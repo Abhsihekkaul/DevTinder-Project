@@ -1,12 +1,19 @@
 const express = require("express");
 const app = express();
 
-app.get("/", (req, res) => {
-    res.send("Hello, world!");
+const Name = "Abhishek";
+const Friend = "Bhavesh";
+
+app.use("/greeting", (req, res) => {
+    res.send("Hello, world! How are you " + Name + " ?");
 });
 
-app.get("/greeting", (req, res) => {
-    res.send("Hello, world! How are you?");
+app.use("/FriendGreet", (req, res) => {
+    res.send("Hello " +  Friend );
+});
+
+app.use("/", (req, res) => {
+    res.send("Hello, world!");
 });
 
 app.listen(3000, () => {
