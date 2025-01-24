@@ -15,7 +15,11 @@ app.get("/userByEmail",async (req,res)=>{
 
     try{
         const user = await User.find({Email : userEmail});
-        res.send(user);
+        if(user.length == 0){
+            res.status(404).send("user does not found!");
+        }else{
+            res.send(user);
+        }
     }catch(err){
         console.log(err);
     }
@@ -35,10 +39,52 @@ app.post("/signup", async (req, res) => {
         
 });
 
+// Api for creating a user and delete that user through the database 
+app.delete("/user", async (req,res)=>{
+    const UserId = req.body._id;
+    try{
+        await User.findByIdAndDelete({_id:UserId});
+        res.send("User Deleted successfully");
+    }catch (err){
+        res.status(404).send("The User with given id does not exist ");
+    }
+
+})
+
 // Feed Api - Get /Feed - to get the all profiles from the database 
 app.get("/feed", async (req,res)=>{
      const users = await User.find();
-     res.send(users);
+     if(users.length == 0){
+        users.status(404).send("No users are here!")
+     }else{
+        res.send(users);
+     }
+})
+
+// update the user with id
+app.patch("/user/id", async (req, res)=>{
+    const UserId = req.body._id;
+    const data = req.body;
+    try{
+        const user = await User.findByIdAndUpdate(UserId, data, {returnDocument : "after"});
+        console.log(user);
+        res.send("User Updated successfully");
+    }catch(err){
+        res.status(404).send("Id does not found ")
+    }
+})
+
+// update the user with email (HomeWorkk)
+app.patch("/user/email", async (req, res)=>{
+    const emailId = req.body.Email;
+    const data = req.body;
+    try{
+        const user = await User.findOneAndUpdate({Email : emailId}, data, {returnDocument : "after", new : true});
+        console.log(user);
+        res.send("User Updated successfully");
+    }catch(err){
+        res.status(404).send("Id does not found ")
+    }
 })
 
 ConnectDB()
