@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-
+const validator = require("validator")
 const userSchema =  new mongoose.Schema({
     firstName : {
         type: String,
@@ -56,7 +56,15 @@ const userSchema =  new mongoose.Schema({
             if(!["male","female","other","others"].includes(value)){
                 throw new Error("The Gender data filled is invalid");
             }
+        },
+    PhotoUrl : {
+        type : String ,
+        validate(value){
+            if(!validator.isURL(value)){
+                throw new Error("Invalid URL");
+            }
         }
+    }
     }
 
 },{timestamps: true});
