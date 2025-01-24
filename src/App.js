@@ -79,11 +79,22 @@ app.patch("/user/email", async (req, res)=>{
     const emailId = req.body.Email;
     const data = req.body;
     try{
-        const user = await User.findOneAndUpdate({Email : emailId}, data, {returnDocument : "after", new : true});
+        // data sanitization - only updating the ones which could be 
+        const Allowed_updates = ["userName", "lastName", "skills", "Age", "Gender"];
+        const isUpdateAllowed = Object.keys(data).every((k)=>Allowed_updates.includes(k));
+        if(!isUpdateAllowed){
+            throw new Error("Invalid Updates!");
+        }
+
+        // data sanitization - skills can not be added more than 10
+        if(req.body.Skills.length > 10){
+            throw new Error("Skills can not be more than 10")
+        }
+        const user = await User.findOneAndUpdate({Email : emailId}, data, {returnDocument : "after", new : true,runValidators: true}); //run Validators will now be into the usage whenever we will make changes to our existing users 
         console.log(user);
         res.send("User Updated successfully");
     }catch(err){
-        res.status(404).send("Id does not found ")
+        res.status(404).send(err);
     }
 })
 
