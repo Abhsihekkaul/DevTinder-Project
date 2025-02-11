@@ -3,7 +3,6 @@ const User = require("../../Models/user.js");
 
 const userAuth = async (req, res, next) => {
     try {
-        // Corrected: Use req.cookies instead of req.cookie
         const { token } = req.cookies;
         if (!token) {
             return res.status(401).send("Unauthorized! Token missing.");

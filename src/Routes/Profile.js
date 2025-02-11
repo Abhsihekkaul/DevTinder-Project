@@ -24,6 +24,8 @@ ProfileRoutes.patch("/profile/edit", userAuth, async (req, res) => {
             )
         }
         const LoggedInUser = req.user;
+
+        // through the following logged in user will got updated through the req.body
         Object.keys(req.body).forEach((key) => {
             LoggedInUser[key] = req.body[key];
         });
